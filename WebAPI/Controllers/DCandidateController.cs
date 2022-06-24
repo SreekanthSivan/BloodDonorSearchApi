@@ -27,7 +27,16 @@ namespace WebAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DCandidate>>> GetDCandidates()
         {
-            return await _context.DCandidates.ToListAsync();
+            IList<DCandidate> result = new List<DCandidate>();
+            try
+            {
+                result = await _context.DCandidates.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Log(LogLevel.Error, ex, ex.Message);
+            }
+            return new ActionResult<IEnumerable<DCandidate>>(result);
         }
 
         // GET: api/DCandidate/5
@@ -38,7 +47,6 @@ namespace WebAPI.Controllers
 
             if (dCandidate == null)
             {
-                _logger.Log(LogLevel.Info, "candidate is null");
                 return NotFound();
             }
 
@@ -87,9 +95,9 @@ namespace WebAPI.Controllers
                 await _context.SaveChangesAsync();
                 return CreatedAtAction("GetDCandidate", new { id = dCandidate.id }, dCandidate);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.Log(LogLevel.Error, ex, "");
+                _logger.Log(LogLevel.Error, ex, ex.Message);
                 throw (ex as Exception);
             }
         }
