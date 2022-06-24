@@ -38,6 +38,7 @@ namespace WebAPI.Controllers
 
             if (dCandidate == null)
             {
+                _logger.Log(LogLevel.Info, "candidate is null");
                 return NotFound();
             }
 
